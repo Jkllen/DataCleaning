@@ -6,14 +6,12 @@ df1 = pd.read_csv("data/Road Accident Data.csv")
 df2 = pd.read_csv("data/traffic_accidents.csv")
 df3 = pd.read_csv("data/dataset_traffic_accident_prediction.csv")
 
-
 # Standardize Column Names
 def standardize_columns(df):
     df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
     return df
 
-
-# Cleaning
+# Basic Cleaning: remove duplicates and fill missing values
 def basic_cleaning(df):
     df = df.drop_duplicates()
 
@@ -25,14 +23,13 @@ def basic_cleaning(df):
 
     return df
 
-
-# Normalize Category Value
+# Normalize Category Values
 def normalize_categories(df):
     for col in df.select_dtypes(include=['object']).columns:
         df[col] = df[col].str.strip().str.lower()
     return df
 
-# Removing Outliers Using IQR
+# Remove Outliers Using IQR
 def remove_outliers(df):
     numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
 
@@ -48,7 +45,7 @@ def remove_outliers(df):
 
     return df
 
-# Filter Based on Factors
+# Defined Factors
 factors = {
     "traffic_accident_data": ["accident_severity", "number_of_vehicles", "number_of_casualties"],
     "driver_condition_data": ["driver_age", "driver_gender", "alcohol_involved"],
@@ -61,36 +58,45 @@ factors = {
     "vehicle_condition": ["vehicle_type", "vehicle_age"]
 }
 
+# Filter only expert-selected columns
 def filter_columns(df, factors):
     selected_cols = []
     for cols in factors.values():
         for col in cols:
             if col in df.columns:
                 selected_cols.append(col)
-    
     return df[selected_cols]
 
-# Cleaning Process
+# Full Cleaning Process
 def clean_process(df, name):
     print(f"\nProcessing {name}...")
 
+    # 1. Standardize all columns
     df = standardize_columns(df)
+
+    # 2. Basic cleaning
     df = basic_cleaning(df)
+
+    # 3. Normalize categorical values
     df = normalize_categories(df)
+
+    # 4. Remove outliers
     df = remove_outliers(df)
+
+    # 5. Keep only expert-selected columns
     df = filter_columns(df, factors)
 
     print(f"{name} shape after cleaning:", df.shape)
     return df
 
+# Clean each dataset
 df1_clean = clean_process(df1, "Dataset 1")
 df2_clean = clean_process(df2, "Dataset 2")
 df3_clean = clean_process(df3, "Dataset 3")
 
-
-# Saving Individual Dataset
+# Save cleaned datasets
 df1_clean.to_csv("cleaned_dataset1.csv", index=False)
 df2_clean.to_csv("cleaned_dataset2.csv", index=False)
 df3_clean.to_csv("cleaned_dataset3.csv", index=False)
 
-print("\n All datasets successfully cleaned.")
+print("\nAll datasets successfully cleaned.")

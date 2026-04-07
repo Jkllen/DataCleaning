@@ -83,7 +83,7 @@ def clean_process(df, name):
     # 4. Remove outliers
     df = remove_outliers(df)
 
-    # 5. Keep only expert-selected columns
+    # 5. Keep only expert-selected columns (based dun sa dataset natin na pinakita sa mga na-interviewed natin)
     df = filter_columns(df, factors)
 
     print(f"{name} shape after cleaning:", df.shape)

@@ -58,6 +58,20 @@ factors = {
     "vehicle_condition": ["vehicle_type", "vehicle_age"]
 }
 
+# Column mapping for Dataset 2 Matching the Variables of the Main Factors
+column_mapping_df2 = {
+    "most_severe_injury": "accident_severity",
+    "num_units": "number_of_vehicles",
+    "injuries_total": "number_of_casualties",
+    "weather_condition": "weather_conditions",
+    "lighting_condition": "light_conditions",
+    "roadway_surface_cond": "road_surface_conditions",
+    "crash_date": "date",
+    "crash_day_of_week": "day_of_week",
+    "crash_hour": "time"
+}
+
+
 # Filter only expert-selected columns
 def filter_columns(df, factors):
     selected_cols = []
@@ -68,18 +82,21 @@ def filter_columns(df, factors):
     return df[selected_cols]
 
 # Full Cleaning Process
-def clean_process(df, name):
+def clean_process(df, name, column_mapping=None):
     print(f"\nProcessing {name}...")
 
     # 1. Standardize all columns
     df = standardize_columns(df)
-    # 2. Basic cleaning
+    # 2. Column Mapping
+    if column_mapping:
+        df = df.rename(columns=column_mapping)
+    # 3. Basic cleaning
     df = basic_cleaning(df)
-    # 3. Normalize categorical values
+    # 4. Normalize categorical values
     df = normalize_categories(df)
-    # 4. Remove outliers
+    # 5. Remove outliers
     df = remove_outliers(df)
-    # 5. Expert-selected columns (based dun sa dataset natin na pinakita sa mga na-interviewed natin)
+    # 6. Expert-selected columns (based dun sa dataset natin na pinakita sa mga na-interviewed natin)
     df = filter_columns(df, factors)
 
     print(f"{name} shape after cleaning:", df.shape)
@@ -87,7 +104,7 @@ def clean_process(df, name):
 
 # Clean each dataset
 df1_clean = clean_process(df1, "Dataset 1")
-df2_clean = clean_process(df2, "Dataset 2")
+df2_clean = clean_process(df2, "Dataset 2", column_mapping_df2)
 df3_clean = clean_process(df3, "Dataset 3")
 
 # Save cleaned datasets

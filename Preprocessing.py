@@ -1,9 +1,7 @@
 import pandas as pd
 import numpy as np
 
-# =========================
-# LOAD DATASETS
-# =========================
+# Load Datasets
 df1 = pd.read_csv("data/Road Accident Data.csv")
 df2 = pd.read_csv("data/traffic_accidents.csv")
 df3 = pd.read_csv("data/dataset_traffic_accident_prediction.csv")
